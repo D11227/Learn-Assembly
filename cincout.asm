@@ -1,26 +1,30 @@
-section.data:						; Data
-	; PROMPT MESSAGE
-	prompt_message: db "Please input the number: "
-	prompt_message_length equ $-prompt_message	; Độ dài message
+%include 'untils.asm'
 
-	; DISPLAY MESSAGE
-	display_message: db "The numer is: "
-	display_message_length equ $-display_message
+section .data:
+	prompt_message db "Please input the number: ", 0xA
+	display_message db "The numer is: ", 0xA
 
-section .bss           ;Uninitialized data
+section .bss           					; Uninitialized data
         num resb 5
 
-section .text:
+section .text
         global _start
 
 _start:							; Start program
-	; Print prompt message
-	mov eax, 4					; Stdout
-	mov ebx, 1					;
-	mov ecx, prompt_message				; Write message
-	mov edx, prompt_message_length			; Message length
-	int 0x80					;
+	call _PrintPrompt
+	call _Input
+	call _Output
 
+	call exit                                       ; Function exit from untils.asm
+
+_PrintPrompt:
+	; Print prompt message
+	mov eax, prompt_message
+	call print                                      ; Function print from untils.asm
+
+	ret
+
+_Input:
 	; Read and store the numer
 	mov eax, 3					; Read from keyboard
 	mov ebx, 2
@@ -28,21 +32,13 @@ _start:							; Start program
 	mov edx, 5					; 5 bytes
 	int 0x80
 
+	ret
+
+_Output:
 	; Print message "The number is: "
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, display_message
-	mov edx, display_message_length
-	int 0x80
+	mov eax, display_message
+	call print
 
-        ;Output the number entered
-        mov eax, 4
-        mov ebx, 1
-        mov ecx, num
-        mov edx, 5
-        int 80h
-
-	; Exit program
-	mov eax, 1					; exit program
-	mov ebx, 0					;
-	int 0x80					;
+	mov eax, num
+	call print
+	ret
