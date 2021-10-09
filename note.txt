@@ -1,0 +1,9 @@
+eax      name           ebx
+1       sys_exit        int
+2       sys_fork        struct pt_regs
+3       sys_read        unsigned int
+4       sys_write       unsigned int
+5       sys_open        const char*
+6       sys_close       unsigned int
+
+"int 0x80" dùng để ngắt
