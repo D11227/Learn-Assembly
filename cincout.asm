@@ -1,8 +1,8 @@
-%include 'untils.asm'
+%include "utils.asm"
 
 section .data:
 	prompt_message db "Please input the number: ", 0xA
-	display_message db "The numer is: ", 0xA
+	display_message db "The number is: ", 0xA
 
 section .bss           					; Uninitialized data
         num resb 5
@@ -25,7 +25,7 @@ _PrintPrompt:
 	ret
 
 _Input:
-	; Read and store the numer
+	; Read and store the number
 	mov eax, 3					; Read from keyboard
 	mov ebx, 2
 	mov ecx, num
