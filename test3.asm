@@ -1,22 +1,49 @@
-%include "utils.asm"
+%macro write_string 2
+
+	mov eax, 0x4
+	mov ebx, 1
+	mov ecx, %1
+	mov edx, %2
+	int 0x80
+
+%endmacro
 
 section .data
-	msg: db "The number entered is: "
+	even_msg: db "The number is even", 0xA
+	even_msg_length: equ $ - even_msg
+
+	odd_msg: db "The number is odd", 0xA
+	odd_msg_length: equ $ - odd_msg
+
 section .bss
-	len equ 5
-	number: resb len
+	number: resb 5
 
 section .text
 	global _start
 
 _start:
-	mov eax, number
-	call input
+	mov eax, 0x3
+	mov ebx, 2
+	mov ecx, number
+	mov edx, 5
+	int 0x80
 
-	mov eax, msg
-	call print
+	push ax
+	mov ax, [number]
+	and ax, 1
+	pop ax
+	jz evenNumber
 
-	mov eax, number
-	call print
+	write_string odd_msg, odd_msg_length
 
-	call exit
+	jmp exit
+
+evenNumber:
+	write_string even_msg, even_msg_length
+
+	jmp exit
+
+exit:
+	mov eax, 0x1
+	mov ebx, 0
+	int 0x80
